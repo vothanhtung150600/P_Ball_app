@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "745766077112",
+    "project_id": "f-ball-710ce",
+    "storage_bucket": "f-ball-710ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745766077112:android:8f5b0c6367b9c848956a4d",
+        "android_client_info": {
+          "package_name": "com.example.fballapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745766077112-gvcq6am2ubdtstt6u2ugmkd3rotrpaeu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgU4p4-7MhXyvai7rcNpwt3DXRm_UJhE0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745766077112-gvcq6am2ubdtstt6u2ugmkd3rotrpaeu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
