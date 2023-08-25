@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:country_picker/country_picker.dart';
 import 'package:fballapp/dialog/showdialog.dart';
+import 'package:fballapp/register/register_phone_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
 import '../provider/auth_provider.dart';
+import '../screens/home_screen.dart';
 import 'user_information_screen.dart';
 import '../widgets/custom_button.dart';
 
@@ -38,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool checkphone = false;
   bool checkpassword = false;
   bool checckconformpass = false;
-
+  bool isshowpass = true;
   @override
   Widget build(BuildContext context) {
     phoneController.selection = TextSelection.fromPosition(
@@ -120,50 +122,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(left: 10,right: 10,top: 20),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          cursorColor: Colors.white,
-                          controller: phoneController,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              phoneController.text = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Vui lòng nhập số điện thoại",
-                            hintStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              color: Colors.white,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Colors.white70),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Colors.white70),
-                            ),
-                          ),
-                        ),
-                      ),
-                      checkphone ? Container(
-                          margin: EdgeInsets.only(left: 15,top: 10),
-                          alignment: Alignment.topLeft,
-                          child: Text('Vui lòng nhập đúng số điện thoại',style: TextStyle(color: Colors.red),)
-                      ): Container(),
                       const SizedBox(height: 20),
                       Container(
                         margin: EdgeInsets.only(left: 10,right: 10),
                         child: TextFormField(
-                          obscureText: true,
+                          obscureText: isshowpass,
                           cursorColor: Colors.white,
                           controller: passwordTextController,
                           style: const TextStyle(
@@ -177,6 +140,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             });
                           },
                           decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isshowpass = !isshowpass;
+                                });
+                              },
+                              child: Container(
+                                child: Icon(Icons.remove_red_eye_outlined,color: Colors.white,),
+                              ),
+                            ),
                             hintText: "Mật khẩu",
                             hintStyle: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -197,13 +170,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       checkpassword ? Container(
                         margin: EdgeInsets.only(left: 15,top: 10),
                         alignment: Alignment.topLeft,
-                          child: Text('Mật khẩu phải trên 9 kí tự',style: TextStyle(color: Colors.red),)
+                          child: Text('Mật khẩu phải trên 6 kí tự',style: TextStyle(color: Colors.red),)
                       ): Container(),
                       const SizedBox(height: 20),
                       Container(
                         margin: EdgeInsets.only(left: 10,right: 10),
                         child: TextFormField(
-                          obscureText: true,
+                          obscureText: isshowpass,
                           cursorColor: Colors.white,
                           controller: passwordcheckTextController,
                           style: const TextStyle(
@@ -263,7 +236,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 50,
                         child: CustomButton(
                             text: "Đăng Ký", onPressed: () {
-                              if(passwordTextController.text.length < 9)
+                              if(passwordTextController.text.length < 5)
                                 setState(() {
                                   checkpassword = true;
                                 });
@@ -277,13 +250,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 });
                           if(emailTextController.text.length != 0 &&
                               passwordcheckTextController.text == passwordTextController.text &&
-                              passwordTextController.text.length > 9 && phoneController.text.length > 9 && phoneController.text.length < 12){
+                              passwordTextController.text.length > 5){
                             FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                                 email: emailTextController.text.trim(),
                                 password: passwordTextController.text.trim())
                                 .then((value) {
-                                    sendPhoneNumber();
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPhone(email: emailTextController.text),));
                                 }).onError((error, stackTrace) {
                               faillogin(context, 'Email đã có người sử dụng!',onPressOK: (){});
                               print("Error ${error.toString()}");
@@ -300,10 +273,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
         )
       ],
     );
-  }
-  void sendPhoneNumber() {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    String phoneNumber = phoneController.text.trim();
-    ap.signInWithPhone(context, "+${selectedCountry.phoneCode}$phoneNumber",emailTextController.text);
   }
 }

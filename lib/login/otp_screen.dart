@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:fballapp/register/user_information_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:otp_timer_button/otp_timer_button.dart';
 
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,9 @@ import '../screens/home_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   String email;
+  String phone;
   final String verificationId;
-  OtpScreen({super.key, required this.verificationId,required this.email});
+  OtpScreen({super.key, required this.verificationId,required this.email,required this.phone});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -23,10 +25,18 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String? otpCode;
+  OtpTimerButtonController controller = OtpTimerButtonController();
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = Provider.of<AuthProvider>(context, listen: true).isLoading;
+    final auth = Provider.of<AuthProvider>(context, listen: true);
+    _requestOtp() {
+      controller.loading();
+      Future.delayed(Duration(seconds: 2), () {
+        controller.startTimer();
+        auth.signInWithPhone(context, widget.phone, widget.email);
+      });
+    }
     return Stack(
       children: [
         Container(
@@ -127,37 +137,34 @@ class _OtpScreenState extends State<OtpScreen> {
                       onPressed: () {
                         if (otpCode != null) {
                           verifyOtp(context, otpCode!);
-                          print(otpCode);
-                          print(widget.verificationId);
                         } else {
                           showSnackBar(context, "Enter 6-Digit code");
                         }
                       },
                     ),
                   ),
-                  // const SizedBox(height: 20),
-                  // const Text(
-                  //   "Bạn chưa nhận được code?",
-                  //   style: TextStyle(
-                  //     fontSize: 14,
-                  //     fontWeight: FontWeight.bold,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 15),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     const Text(
-                  //       "Gửi lại",
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Bạn chưa nhận được code?",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OtpTimerButton(
+                        backgroundColor: Colors.green,
+                        controller: controller,
+                        onPressed: () => _requestOtp(),
+                        text: Text('Gửi lại',style: TextStyle(color: Colors.white),),
+                        duration: 60,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -175,7 +182,6 @@ class _OtpScreenState extends State<OtpScreen> {
       verificationId: widget.verificationId,
       userOtp: userOtp,
       onSuccess: () {
-        // checking whether user exists in the db
         ap.checkExistingUser().then(
           (value) async {
             if (value == true) {

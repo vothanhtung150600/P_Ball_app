@@ -55,10 +55,10 @@ import '../utils/utils.dart';
             throw Exception(error.message);
           },
           codeSent: (verificationId, forceResendingToken) {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(verificationId: verificationId,email: email),
+                builder: (context) => OtpScreen(verificationId: verificationId,email: email,phone: phoneNumber),
               ),
             );
           },

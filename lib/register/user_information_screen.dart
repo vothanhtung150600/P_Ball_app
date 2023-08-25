@@ -162,6 +162,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
                               child: TextFormField(
+                                readOnly: true,
                                 cursorColor: Colors.black,
                                 decoration: InputDecoration(
                                   prefixIcon: Container(
@@ -206,8 +207,8 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                                 onTap: () async{
                                   DateTime? pickedDate = await showDatePicker(
                                       context: context, initialDate: DateTime.now(),
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2101)
+                                      firstDate: DateTime(1950),
+                                      lastDate: DateTime.now()
                                   );
                                   if(pickedDate != null ){
                                     print(pickedDate);
@@ -246,7 +247,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                                       color: Colors.transparent,
                                     ),
                                   ),
-                                  hintText: '15/06/2000',
+                                  hintText: '**-**-****',
                                   alignLabelWithHint: true,
                                   border: InputBorder.none,
                                   fillColor: Colors.white,

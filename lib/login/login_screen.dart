@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:country_picker/country_picker.dart';
 import 'package:fballapp/login/login_phone_screen.dart';
-import 'package:fballapp/login/reset_password.dart';
+import 'package:fballapp/login/reset_email_pass.dart';
+import 'package:fballapp/register/register_phone_screen.dart';
 import 'package:fballapp/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
 
+  bool isshowpass = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -117,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         margin: EdgeInsets.only(left: 10,right: 10),
                         child: TextFormField(
-                          obscureText: true,
+                          obscureText: isshowpass,
                           cursorColor: Colors.white,
                           controller: passwordTextController,
                           style: const TextStyle(
@@ -131,6 +133,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                           decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isshowpass = !isshowpass;
+                                });
+                              },
+                              child: Container(
+                                child: Icon(Icons.remove_red_eye_outlined,color: Colors.white,),
+                              ),
+                            ),
                             hintText: "Mật khẩu",
                             hintStyle: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -146,6 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderSide: const BorderSide(color: Colors.white70),
                             ),
                           ),
+
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -169,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               (value) => Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(),))
                                       ),
                                     ),
-                                  );
+                                  ).onError((error, stackTrace) => Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPhone(email: emailTextController.text),)));
                                 } else {
                                   // new user
                                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserInfromationScreen(email: emailTextController.text),));
@@ -202,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPassword(),));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetEmail(),));
                                 },
                                 child: Text('Quên mật khẩu',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500))
                             ),

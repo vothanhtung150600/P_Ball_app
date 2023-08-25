@@ -46,6 +46,7 @@ dependencies:
   image_picker: ^0.8.6
   flutter_native_splash: ^2.3.2
   intl: ^0.18.1
+  otp_timer_button: ^1.1.0
 
 
 flutter_native_splash:

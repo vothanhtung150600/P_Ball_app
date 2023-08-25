@@ -1,20 +1,20 @@
 import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../dialog/showdialog.dart';
 import '../utils/color_utils.dart';
 import '../widgets/custom_button.dart';
 
-class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key}) : super(key: key);
+class ResetEmail extends StatefulWidget {
+  const ResetEmail({Key? key}) : super(key: key);
 
   @override
-  _ResetPasswordState createState() => _ResetPasswordState();
+  _ResetEmailState createState() => _ResetEmailState();
 }
 
-class _ResetPasswordState extends State<ResetPassword> {
-  TextEditingController _emailTextController = TextEditingController();
+class _ResetEmailState extends State<ResetEmail> {
+  TextEditingController emailTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -60,7 +60,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         margin: EdgeInsets.only(left: 10,right: 10,top: 20),
                         child: TextFormField(
                           cursorColor: Colors.white,
-                          controller: _emailTextController,
+                          controller: emailTextController,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -68,7 +68,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              _emailTextController.text = value;
+                              emailTextController.text = value;
                             });
                           },
                           decoration: InputDecoration(
@@ -96,10 +96,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                         margin: EdgeInsets.only(left: 50,right: 50,top: 30),
                         width: double.infinity,
                         height: 50,
-                        child: CustomButton(text: "Tạo mật khẩu mới", onPressed:() {
+                        child: CustomButton(text: "Reset password", onPressed:() {
                           FirebaseAuth.instance
-                              .sendPasswordResetEmail(email: _emailTextController.text)
-                              .then((value) => Navigator.of(context).pop());
+                              .sendPasswordResetEmail(email: emailTextController.text)
+                              .then((value) => resetpass(context,'Vui lòng check email của bạn để thay đổi mật khẩu',onPressOK: (){Navigator.pop(context);})
+                          ).onError((error, stackTrace) => faillogin(context, 'Email này chưa được đăng ký',onPressOK: () {}));
                         }),
                       )
                     ],
