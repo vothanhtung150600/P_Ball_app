@@ -4,8 +4,6 @@ import 'package:fballapp/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../login/login_phone_screen.dart';
-import '../register/register_screen.dart';
 import '../utils/page_route_anim.dart';
 
 
@@ -24,10 +22,6 @@ class Router2 {
     switch (settings.name) {
       case RouteName.home:
         return NoAnimRouteBuilder(HomeScreen());
-      case RouteName.register:
-        return NoAnimRouteBuilder(RegisterScreen());
-      case RouteName.loginphone:
-        return NoAnimRouteBuilder(LoginPhoneScreen());
       case RouteName.login:
         return NoAnimRouteBuilder(LoginScreen());
 

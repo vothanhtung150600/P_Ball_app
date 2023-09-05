@@ -1,35 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel {
-  String name;
-  String email;
-  String bio;
-  String birthday;
-  String profilePic;
-  String createdAt;
-  String phoneNumber;
-  String uid;
+ late String name;
+ late String bio;
+ late String birthday;
+ late String profilePic;
+ late String createdAt;
+ late String phoneNumber;
+ late String uid;
+ late String role;
 
   UserModel({
     required this.name,
-    required this.email,
     required this.bio,
     required this.birthday,
     required this.profilePic,
     required this.createdAt,
     required this.phoneNumber,
     required this.uid,
+    required this.role
   });
 
-  // from map
+  UserModel.phone({required this.phoneNumber});
+  UserModel.profile({required this.profilePic});
+
+
+ // from map
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       name: map['name'] ?? '',
-      email: map['email'] ?? '',
       bio: map['bio'] ?? '',
       birthday: map['birthday'],
       uid: map['uid'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       createdAt: map['createdAt'] ?? '',
       profilePic: map['profilePic'] ?? '',
+      role: map['role'] ?? '',
     );
   }
 
@@ -37,13 +43,13 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       "name": name,
-      "email": email,
       "uid": uid,
       "bio": bio,
       "birthday" : birthday,
       "profilePic": profilePic,
       "phoneNumber": phoneNumber,
       "createdAt": createdAt,
+      "role": role
     };
   }
 }

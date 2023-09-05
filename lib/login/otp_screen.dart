@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:fballapp/register/user_information_screen.dart';
+import 'package:fballapp/dialog/showdialog.dart';
+import 'package:fballapp/login/user_information_screen.dart';
+import 'package:fballapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_timer_button/otp_timer_button.dart';
 
@@ -9,15 +11,15 @@ import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/auth_provider.dart';
+import '../utils/loading_widget.dart';
 import '../utils/utils.dart';
 import '../widgets/custom_button.dart';
 import '../screens/home_screen.dart';
 
 class OtpScreen extends StatefulWidget {
-  String email;
   String phone;
   final String verificationId;
-  OtpScreen({super.key, required this.verificationId,required this.email,required this.phone});
+  OtpScreen({super.key, required this.verificationId,required this.phone});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -34,7 +36,7 @@ class _OtpScreenState extends State<OtpScreen> {
       controller.loading();
       Future.delayed(Duration(seconds: 2), () {
         controller.startTimer();
-        auth.signInWithPhone(context, widget.phone, widget.email);
+        auth.signInWithPhone(context, widget.phone);
       });
     }
     return Stack(
@@ -129,19 +131,25 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                   const SizedBox(height: 25),
                   Container(
-                    margin: EdgeInsets.only(left: 50,right: 50),
-                    width: double.infinity,
-                    height: 50,
-                    child: CustomButton(
-                      text: "Xác thực",
-                      onPressed: () {
-                        if (otpCode != null) {
-                          verifyOtp(context, otpCode!);
-                        } else {
-                          showSnackBar(context, "Enter 6-Digit code");
-                        }
-                      },
-                    ),
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      height: 50,
+                      margin: EdgeInsets.only(left: 50,right: 50),
+                      width: double.infinity,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (otpCode != null) {
+                            verifyOtp(context, otpCode!);
+                          } else {
+                            faillogin(context, 'Vui lòng nhập code',onPressOK: () {});
+                          }
+                        },
+                        child: Center(
+                          child: auth.isLoading ? LoadingWidget() :Text('Xác thực',style: TextStyle(color: Colors.white,fontSize: 18),),
+                        ),
+                      )
                   ),
                   const SizedBox(height: 20),
                   const Text(
@@ -192,7 +200,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 (value) => Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
+                                      builder: (context) => const MyHomePage(),
                                     ),
                                     (route) => false),
                               ),
@@ -203,8 +211,8 @@ class _OtpScreenState extends State<OtpScreen> {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UserInfromationScreen(email: widget.email,)),
-                  (route) => false);
+                      builder: (context) => UserInfromationScreen(phonenumber: widget.phone)),
+                      (route) => false);
             }
           },
         );

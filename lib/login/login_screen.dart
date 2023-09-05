@@ -1,11 +1,7 @@
 import 'dart:ui';
 
 import 'package:country_picker/country_picker.dart';
-import 'package:fballapp/login/login_phone_screen.dart';
-import 'package:fballapp/login/reset_email_pass.dart';
-import 'package:fballapp/register/register_phone_screen.dart';
-import 'package:fballapp/screens/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fballapp/utils/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -13,9 +9,8 @@ import 'package:provider/provider.dart';
 
 import '../dialog/showdialog.dart';
 import '../provider/auth_provider.dart';
-import '../register/register_screen.dart';
 import '../router/router.dart';
-import '../register/user_information_screen.dart';
+import 'user_information_screen.dart';
 import '../widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,16 +21,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailTextController = TextEditingController();
-  TextEditingController passwordTextController = TextEditingController();
-
-  bool isshowpass = true;
+  TextEditingController phonenumberTextController = TextEditingController();
+  Country selectedCountry = Country(
+    phoneCode: "84",
+    countryCode: "VN",
+    e164Sc: 0,
+    geographic: true,
+    level: 1,
+    name: "Vietnam",
+    example: "Vietnam",
+    displayName: "Vietnam",
+    displayNameNoCountryCode: "VN",
+    e164Key: "",
+  );
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     FlutterNativeSplash.remove();
   }
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -86,7 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         margin: EdgeInsets.only(left: 10,right: 10),
                         child: TextFormField(
                           cursorColor: Colors.white,
-                          controller: emailTextController,
+                          keyboardType: TextInputType.number,
+                          controller: phonenumberTextController,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -94,11 +100,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              emailTextController.text = value;
+                              phonenumberTextController.text = value;
                             });
                           },
                           decoration: InputDecoration(
-                            hintText: "Vui lòng nhập Email",
+                            hintText: "Vui lòng nhập Số điện thoại của bạn",
                             hintStyle: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
@@ -117,119 +123,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
                       Container(
-                        margin: EdgeInsets.only(left: 10,right: 10),
-                        child: TextFormField(
-                          obscureText: isshowpass,
-                          cursorColor: Colors.white,
-                          controller: passwordTextController,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              passwordTextController.text = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  isshowpass = !isshowpass;
-                                });
-                              },
-                              child: Container(
-                                child: Icon(Icons.remove_red_eye_outlined,color: Colors.white,),
-                              ),
-                            ),
-                            hintText: "Mật khẩu",
-                            hintStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              color: Colors.white,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Colors.white70),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Colors.white70),
-                            ),
-                          ),
-
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20)
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        height: 50,
-                        margin: EdgeInsets.only(left: 50,right: 50,top: 30),
+                        height: 60,
+                        margin: EdgeInsets.only(left: 50,right: 50,top: 40),
                         width: double.infinity,
-                        child: CustomButton(
-                            text: "Đăng nhập", onPressed: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          FirebaseAuth.instance.signInWithEmailAndPassword(
-                              email: emailTextController.text,
-                              password: passwordTextController.text).then((value) {
-                            ap.checkExistingUser().then(
-                                  (value) async {
-                                if (value == true) {
-                                  // user exists in our app
-                                  ap.getDataFromFirestore().then(
-                                        (value) => ap.saveUserDataToSP().then(
-                                          (value) => ap.setSignIn().then(
-                                              (value) => Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(),))
-                                      ),
-                                    ),
-                                  ).onError((error, stackTrace) => Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPhone(email: emailTextController.text),)));
-                                } else {
-                                  // new user
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserInfromationScreen(email: emailTextController.text),));
-                                }
-                              },
-                            );
-                          }).onError((error, stackTrace) {
-                            faillogin(
-                                context,
-                                'Sai thông tin đăng nhập hoặc mật khẩu',
-                                onPressOK: (){}
-                            );
-                            print("Error ${error.toString()}");
-                          });
-                        }
-                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            if(phonenumberTextController.text.length < 9){
+                              faillogin(context, 'Hãy nhập số điện thoại của bạn',onPressOK: (){});
+                            }else{
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              sendPhoneNumber();
+                            }
+                          },
+                          child: Center(
+                            child: ap.isLoading ? LoadingWidget() :Text('Đăng nhập',style: TextStyle(color: Colors.white,fontSize: 18),),
+                          ),
+                        )
                       ),
                       const SizedBox(height: 30),
-                      Container(
-                        margin: EdgeInsets.only(left: 20,right: 20),
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterScreen(),));
-                                },
-                                child: Text('Đăng ký',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500))
-                            ),
-                            GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetEmail(),));
-                                },
-                                child: Text('Quên mật khẩu',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500))
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-        )
+        ),
       ],
     );
+  }
+  void sendPhoneNumber() {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String phoneNumber = phonenumberTextController.text.trim();
+    ap.signInWithPhone(context, "+${selectedCountry.phoneCode}$phoneNumber");
   }
 }

@@ -13,8 +13,8 @@ import '../widgets/custom_button.dart';
 import '../screens/home_screen.dart';
 
 class UserInfromationScreen extends StatefulWidget {
-  String email;
-  UserInfromationScreen({super.key,required this.email});
+  String phonenumber;
+  UserInfromationScreen({super.key,required this.phonenumber});
 
   @override
   State<UserInfromationScreen> createState() => _UserInfromationScreenState();
@@ -159,44 +159,6 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                               ),
                             ),
                             // email
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: TextFormField(
-                                readOnly: true,
-                                cursorColor: Colors.black,
-                                decoration: InputDecoration(
-                                  prefixIcon: Container(
-                                    margin: const EdgeInsets.all(8.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.purple,
-                                    ),
-                                    child: Icon(
-                                      Icons.email,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                  hintText: widget.email,
-                                  alignLabelWithHint: true,
-                                  border: InputBorder.none,
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                ),
-                              ),
-                            ),
                             // bio
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
@@ -369,13 +331,13 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     UserModel userModel = UserModel(
       name: nameController.text.trim(),
-      email: widget.email.trim(),
       bio: bioController.text.trim(),
       birthday: dateinput.text,
       profilePic: "",
       createdAt: "",
-      phoneNumber: "",
+      phoneNumber: " ",
       uid: "",
+      role: "user",
     );
     if (image != null) {
       ap.saveUserDataToFirebase(
@@ -396,7 +358,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
         },
       );
     } else {
-      showSnackBar(context, "Please upload your profile photo");
+      showSnackBar(context, "Hãy chọn ảnh đại diện");
     }
   }
 }

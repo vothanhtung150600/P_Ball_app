@@ -11,7 +11,7 @@ import '../model/user_model.dart';
 import '../login/otp_screen.dart';
 import '../utils/utils.dart';
 
-  class AuthProvider extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
   bool _isLoading = false;
@@ -43,8 +43,10 @@ import '../utils/utils.dart';
   }
 
   // signin
-  void signInWithPhone(BuildContext context, String phoneNumber,String email) async {
+  void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
+      _isLoading = true;
+      notifyListeners();
       await _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
           verificationCompleted: (PhoneAuthCredential credential) async {
@@ -55,10 +57,12 @@ import '../utils/utils.dart';
             throw Exception(error.message);
           },
           codeSent: (verificationId, forceResendingToken) {
-            Navigator.pushReplacement(
+            _isLoading = false;
+            notifyListeners();
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(verificationId: verificationId,email: email,phone: phoneNumber),
+                builder: (context) => OtpScreen(verificationId: verificationId,phone: phoneNumber),
               ),
             );
           },
@@ -97,6 +101,7 @@ import '../utils/utils.dart';
       notifyListeners();
     }
   }
+
 
   // DATABASE OPERTAIONS
   Future<bool> checkExistingUser() async {
@@ -158,16 +163,16 @@ import '../utils/utils.dart';
         .collection("users")
         .doc(_firebaseAuth.currentUser!.uid)
         .get()
-        .then((DocumentSnapshot snapshot) {
+        .then((DocumentSnapshot snapshot) async {
       _userModel = UserModel(
         name: snapshot['name'],
-        email: snapshot['email'],
         createdAt: snapshot['createdAt'],
         bio: snapshot['bio'],
         birthday: snapshot['birthday'],
         uid: snapshot['uid'],
         profilePic: snapshot['profilePic'],
         phoneNumber: snapshot['phoneNumber'],
+        role: snapshot['role'],
       );
       _uid = userModel.uid;
     });

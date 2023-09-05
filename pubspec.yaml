@@ -47,6 +47,7 @@ dependencies:
   flutter_native_splash: ^2.3.2
   intl: ^0.18.1
   otp_timer_button: ^1.1.0
+  permission_handler: ^10.4.3
 
 
 flutter_native_splash:

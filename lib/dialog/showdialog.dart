@@ -6,93 +6,91 @@ Future faillogin(context, String message,{ Function? onPressOK, Function? onPres
   await Future.delayed(Duration(milliseconds: 100), () {
     if (message != null || message.isNotEmpty) {
       return showDialog<void>(
-        barrierDismissible: false,
+        barrierDismissible: true,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.transparent,
             contentPadding: EdgeInsets.all(0),
-            title: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        message,
-                        maxLines: 20,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            height: 1.2
-                        ),
+            title: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      message,
+                      maxLines: 20,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                          height: 1.2
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(height: 1,width: double.infinity,color: Colors.black,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        if (onPressCancel != null)
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      right: BorderSide(
-                                        width: 1,
-                                        color: Colors.black,
-                                      )
-                                  )
-                              ),
-                              child: TextButton(
-                                child: Text('Cancel',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.green,
-                                        letterSpacing: 0.05,
-                                        height: 1.3
-                                    )),
-                                onPressed: () {
-                                  onPressCancel();
-                                  Navigator.of(context).pop();
-                                },
-                              ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(height: 1,width: double.infinity,color: Colors.black,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (onPressCancel != null)
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    right: BorderSide(
+                                      width: 1,
+                                      color: Colors.black,
+                                    )
+                                )
                             ),
-                          ),
-                        //if (onPressCancel != null)
-                        //Container(height: SizeConfig.textMultiplier * 5,width:SizeConfig.heightMultiplier*0.1,color: AppColors.colorMain4,),
-                        if (onPressOK != null)
-                          Expanded(
-                            flex: 1,
                             child: TextButton(
-                              child: Text('Thử lại',
+                              child: Text('Cancel',
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.green,
                                       letterSpacing: 0.05,
-                                      fontWeight: FontWeight.w700
+                                      height: 1.3
                                   )),
                               onPressed: () {
-                                onPressOK();
+                                onPressCancel();
                                 Navigator.of(context).pop();
                               },
                             ),
                           ),
-                      ],
-                    )
-                  ],
-                ),
+                        ),
+                      //if (onPressCancel != null)
+                      //Container(height: SizeConfig.textMultiplier * 5,width:SizeConfig.heightMultiplier*0.1,color: AppColors.colorMain4,),
+                      if (onPressOK != null)
+                        Expanded(
+                          flex: 1,
+                          child: TextButton(
+                            child: Text('Thử lại',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.green,
+                                    letterSpacing: 0.05,
+                                    fontWeight: FontWeight.w700
+                                )),
+                            onPressed: () {
+                              onPressOK();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                    ],
+                  )
+                ],
               ),
             ),
           );
