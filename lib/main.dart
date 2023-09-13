@@ -1,32 +1,44 @@
+import 'dart:developer';
 import 'dart:ui';
 
+import 'package:fballapp/chat/screens/home_screen.dart';
 import 'package:fballapp/provider/auth_provider.dart';
 import 'package:fballapp/provider_manager.dart';
 import 'package:fballapp/screens/Infomation_screen.dart';
 import 'package:fballapp/screens/home_screen.dart';
-import 'package:fballapp/screens/message_screen.dart';
 import 'package:fballapp/screens/notifi_screen.dart';
 import 'package:fballapp/screens/team_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
+import 'chat/models/firebase_helper.dart';
+import 'chat/screens/group_chats/create_group/add_members.dart';
+import 'chat/screens/search_screen.dart';
 import 'login/login_screen.dart';
+import 'model/user_model.dart';
+
+late Size mq;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
+
   await Permission.notification.isDenied.then((value) {
     if (value) {
       Permission.notification.request();
     }
   });
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) {
+    _initializeFirebase();
+  });
   runApp(
       ChangeNotifierProvider(
           create: (BuildContext context) => AuthProvider(),
@@ -34,6 +46,17 @@ void main() async {
       ),
   );
 }
+
+
+_initializeFirebase() async {
+  var result = await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
+  log('\nNotification Channel Result: $result');
+}
+
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -74,6 +97,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
   late TabController _tabController;
+  User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -83,6 +107,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   }
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Phủi Mini",style: TextStyle(color: Colors.green,fontWeight: FontWeight.w500),),
@@ -90,15 +116,27 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           Container(
             margin: EdgeInsets.only(right: 20),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchScreens(
+                      userModel: ap.userModel,
+                      firebaseUser: currentUser,
+                    ),
+                  ),
+                );
+              },
               child: Icon(Icons.search),
             ),
           ),
           Container(
             margin: EdgeInsets.only(right: 20),
             child: GestureDetector(
-              onTap: () {},
-              child: Icon(Icons.person_add_alt_1),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddMembersInGroup(),));
+              },
+              child: Icon(Icons.group_add_rounded),
             ),
           ),
         ],
@@ -146,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         physics: NeverScrollableScrollPhysics(),
         children: [
           HomeScreen(),
-          MessageScreen(),
+          HomeScreenss(),
           TeamScreen(),
           NotifiScreen(),
           Infomation(),

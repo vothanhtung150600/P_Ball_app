@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -44,16 +45,19 @@ class AuthProvider extends ChangeNotifier {
 
   // signin
   void signInWithPhone(BuildContext context, String phoneNumber) async {
+    _isLoading = true;
+    notifyListeners();
     try {
-      _isLoading = true;
-      notifyListeners();
       await _firebaseAuth.verifyPhoneNumber(
+          timeout: Duration(seconds: 60),
           phoneNumber: phoneNumber,
           verificationCompleted: (PhoneAuthCredential credential) async {
             print('credential: ${credential.smsCode.toString()}');
             await _firebaseAuth.signInWithCredential(credential);
           },
           verificationFailed: (error) {
+            _isLoading = false;
+            notifyListeners();
             throw Exception(error.message);
           },
           codeSent: (verificationId, forceResendingToken) {
@@ -172,7 +176,7 @@ class AuthProvider extends ChangeNotifier {
         uid: snapshot['uid'],
         profilePic: snapshot['profilePic'],
         phoneNumber: snapshot['phoneNumber'],
-        role: snapshot['role'],
+        status: snapshot['status']
       );
       _uid = userModel.uid;
     });
@@ -193,6 +197,9 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future userSignOut() async {
+   await _firebaseFirestore.collection('users').doc(_firebaseAuth.currentUser!.uid).update({
+      "status": "Offline",
+    });
     SharedPreferences s = await SharedPreferences.getInstance();
     await _firebaseAuth.signOut();
     _isSignedIn = false;

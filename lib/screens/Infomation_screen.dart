@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fballapp/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -31,7 +32,7 @@ class _InfomationState extends State<Infomation> {
               margin: EdgeInsets.only(top: 20,left: 10,right: 10),
               padding: EdgeInsets.only(left: 10,top: 10,bottom: 10),
               decoration: BoxDecoration(
-                color: Colors.black12.withOpacity(0.1),
+                color: Colors.green.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(5)
               ),
               child: Row(
@@ -64,7 +65,7 @@ class _InfomationState extends State<Infomation> {
                   borderRadius: BorderRadius.circular(5)
               ),
               child: GestureDetector(
-                onTap: () {
+                onTap: () async{
                   ap.userSignOut().then(
                         (value) => Navigator.push(
                       context,

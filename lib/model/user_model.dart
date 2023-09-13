@@ -8,7 +8,7 @@ class UserModel {
  late String createdAt;
  late String phoneNumber;
  late String uid;
- late String role;
+ late String status;
 
   UserModel({
     required this.name,
@@ -18,7 +18,7 @@ class UserModel {
     required this.createdAt,
     required this.phoneNumber,
     required this.uid,
-    required this.role
+    required this.status
   });
 
   UserModel.phone({required this.phoneNumber});
@@ -28,20 +28,20 @@ class UserModel {
  // from map
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      name: map['name'] ?? '',
-      bio: map['bio'] ?? '',
-      birthday: map['birthday'],
-      uid: map['uid'] ?? '',
-      phoneNumber: map['phoneNumber'] ?? '',
-      createdAt: map['createdAt'] ?? '',
-      profilePic: map['profilePic'] ?? '',
-      role: map['role'] ?? '',
+      name: map['name'] ?? map['name'] as String ?? '',
+      bio: map['bio'] ?? map['bio'] as String ?? '',
+      birthday: map['birthday'] ?? map['birthday'] as String ?? '',
+      uid: map['uid'] ?? map['uid'] as String ?? '',
+      phoneNumber: map['phoneNumber'] ?? map['phoneNumber'] as String ?? '',
+      createdAt: map['createdAt'] ?? map['createdAt'] as String ?? '',
+      profilePic: map['profilePic'] ?? map['profilePic'] as String ?? '',
+      status: map['status'] ?? map['status'] as String ?? '',
     );
   }
 
   // to map
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       "name": name,
       "uid": uid,
       "bio": bio,
@@ -49,7 +49,7 @@ class UserModel {
       "profilePic": profilePic,
       "phoneNumber": phoneNumber,
       "createdAt": createdAt,
-      "role": role
+      "status": status,
     };
   }
 }

@@ -5,6 +5,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../main.dart';
 import '../model/user_model.dart';
 import '../provider/auth_provider.dart';
 import '../utils/utils.dart';
@@ -335,9 +336,9 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
       birthday: dateinput.text,
       profilePic: "",
       createdAt: "",
-      phoneNumber: " ",
+      phoneNumber: widget.phonenumber,
       uid: "",
-      role: "user",
+      status: " "
     );
     if (image != null) {
       ap.saveUserDataToFirebase(
@@ -350,7 +351,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                       (value) => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const MyHomePage(),
                       ),
                           (route) => false),
                 ),

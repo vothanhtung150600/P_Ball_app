@@ -11,3 +11,12 @@ class LoadingWidget extends StatelessWidget{
   }
 
 }
+class LoadingWidgetGreen extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(color: Colors.green, strokeWidth: 2,),
+    );
+  }
+
+}
