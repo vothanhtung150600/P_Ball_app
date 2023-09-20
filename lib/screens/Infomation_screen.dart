@@ -26,10 +26,13 @@ class _InfomationState extends State<Infomation> {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Trang cá nhân',style: TextStyle(fontWeight: FontWeight.w500),),
+        ),
         body: Column(
           children: [
             Container(
-              margin: EdgeInsets.only(top: 20,left: 10,right: 10),
+              margin: EdgeInsets.only(top: 10,left: 10,right: 10),
               padding: EdgeInsets.only(left: 10,top: 10,bottom: 10),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.2),

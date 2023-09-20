@@ -1,6 +1,5 @@
 
 import 'package:fballapp/login/login_screen.dart';
-import 'package:fballapp/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +19,6 @@ class RouteName {
 class Router2 {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RouteName.home:
-        return NoAnimRouteBuilder(HomeScreen());
       case RouteName.login:
         return NoAnimRouteBuilder(LoginScreen());
 

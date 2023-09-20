@@ -258,14 +258,13 @@ Future messageReport(context,String name,int price,{ Function(TextEditingControl
                           margin: EdgeInsets.only(top: 20),
                           child: Column(
                             children: [
-                              Text('Nếu giá có thay đổi hãy cập nhật bên dưới',style: TextStyle(fontSize: 18),),
+                              Text('Nhập tên nhóm',style: TextStyle(fontSize: 18),),
                               SizedBox(height: 30,),
                               Container(
                                 margin: EdgeInsets.only(left: 10,right: 10),
                                 child: TextFormField(
                                   obscureText:  false,
                                   textInputAction: TextInputAction.done,
-                                  keyboardType: TextInputType.number,
                                   maxLines: 1,
                                   textAlignVertical: TextAlignVertical.top,
                                   minLines: 1,
@@ -298,11 +297,11 @@ Future messageReport(context,String name,int price,{ Function(TextEditingControl
                                       child: Container(
                                         margin: EdgeInsets.all(5),
                                         decoration: BoxDecoration(
-                                            color: Colors.orange.withOpacity(0.8),
+                                            color: Colors.green.withOpacity(0.8),
                                             borderRadius: BorderRadius.circular(10)
                                         ),
                                         child: Center(
-                                          child: Text('Cập nhật',
+                                          child: Text('Tạo nhóm',
                                               style: TextStyle(
                                                   fontSize: 18,
                                                   color: Colors.white,

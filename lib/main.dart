@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:fballapp/chat/screens/home_screen.dart';
+import 'package:fballapp/post/main_page.dart';
 import 'package:fballapp/provider/auth_provider.dart';
 import 'package:fballapp/provider_manager.dart';
 import 'package:fballapp/screens/Infomation_screen.dart';
-import 'package:fballapp/screens/home_screen.dart';
 import 'package:fballapp/screens/notifi_screen.dart';
 import 'package:fballapp/screens/team_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

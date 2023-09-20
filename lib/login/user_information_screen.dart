@@ -11,7 +11,6 @@ import '../provider/auth_provider.dart';
 import '../utils/utils.dart';
 import 'package:intl/intl.dart';
 import '../widgets/custom_button.dart';
-import '../screens/home_screen.dart';
 
 class UserInfromationScreen extends StatefulWidget {
   String phonenumber;

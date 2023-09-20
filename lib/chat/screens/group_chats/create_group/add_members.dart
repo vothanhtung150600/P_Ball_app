@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../../../dialog/showdialog.dart';
+import '../../../../main.dart';
 import '../../../../provider/auth_provider.dart';
 import 'create_group.dart';
 
@@ -16,6 +19,7 @@ class AddMembersInGroup extends StatefulWidget {
 
 class _AddMembersInGroupState extends State<AddMembersInGroup> {
   final TextEditingController _search = TextEditingController();
+  final TextEditingController _groupName = TextEditingController();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> membersList = [];
@@ -86,6 +90,7 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
         userMap = null;
       });
     }
+    _search.text = '';
   }
 
 
@@ -163,7 +168,17 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
                     ),
                   ),
                 ),
-                trailing: IconButton(icon: Icon(Icons.add),onPressed: onResultTap,),
+                trailing: GestureDetector(
+                  onTap: onResultTap,
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blue
+                    ),
+                    child: Text('Thêm',style: TextStyle(color: Colors.white),),
+                  ),
+                ),
                 title: Text(userMap!['name'].toString(),style: TextStyle(fontWeight: FontWeight.w600),),
                 subtitle: Text(userMap!['phoneNumber'].toString(),),
               ),
@@ -200,13 +215,24 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
                             ),
                           ),
                         ),
-                        trailing: isadmin ? null :  IconButton(icon: Icon(Icons.close),onPressed: () {
-                          if (membersList[index]['uid'] != ap.userModel.phoneNumber) {
-                            setState(() {
-                              membersList.removeAt(index);
-                            });
-                          }
-                        }),
+
+                        trailing: isadmin ? Text('Admin') :  GestureDetector(
+                          onTap: (){
+                            if (membersList[index]['uid'] != ap.userModel.phoneNumber) {
+                              setState(() {
+                                membersList.removeAt(index);
+                              });
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.red
+                            ),
+                            child: Text('Xóa',style: TextStyle(color: Colors.white),),
+                          ),
+                        ),
                         title: Text(membersList[index]['name'].toString(),style: TextStyle(fontWeight: FontWeight.w600),),
                         subtitle: Text(membersList[index]['phoneNumber'].toString().replaceAll("+84", "0"),),
                       ),
@@ -220,16 +246,169 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
       floatingActionButton: membersList.length > 1
           ? FloatingActionButton(
               backgroundColor: Colors.green.withOpacity(0.8),
-              child: Icon(Icons.forward,color: Colors.black,),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => CreateGroup(
-                    membersList: membersList,
-                  ),
-                ),
+              child: Icon(Icons.check,color: Colors.black,),
+              onPressed: () => showModalBottomSheet<void>(
+                useSafeArea: true,
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+
+
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 20,left: 10,right: 10),
+                        padding: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 10,right: 30),
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Icon(Icons.close,color: Colors.black,),
+                                      ),
+                                      SizedBox(width: 50,),
+                                      Container(
+                                        width: 200,
+                                        child: Text(
+                                          'Nhập tên nhóm',
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(height: 1,width: double.infinity,decoration: BoxDecoration(border: Border.all(color: Colors.black),color: Colors.white.withOpacity(0.5)),),
+                              Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 20),
+                                    child: Column(
+                                      children: [
+                                        Text('Nhập tên nhóm',style: TextStyle(fontSize: 18),),
+                                        SizedBox(height: 30,),
+                                        Container(
+                                          margin: EdgeInsets.only(left: 10,right: 10),
+                                          child: TextFormField(
+                                            obscureText:  false,
+                                            textInputAction: TextInputAction.done,
+                                            maxLines: 1,
+                                            textAlignVertical: TextAlignVertical.top,
+                                            minLines: 1,
+                                            style: TextStyle(color: Colors.black),
+                                            controller: _groupName,
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              labelStyle: TextStyle(color: Colors.grey),
+                                              enabledBorder:  OutlineInputBorder(
+                                                borderSide:  BorderSide(color: Colors.black, width: 0.0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ),
+                              Container(height: 1,width: double.infinity,color: Colors.white.withOpacity(0.5),),
+
+                              Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            child: GestureDetector(
+                                              child: Container(
+                                                margin: EdgeInsets.all(5),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.green.withOpacity(0.8),
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Center(
+                                                  child: Text('Tạo nhóm',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white,
+                                                          letterSpacing: 0.05,
+                                                          fontWeight: FontWeight.w700
+                                                      )),
+                                                ),
+                                              ),
+                                              onTap: createGroup,
+                                            ),
+                                          )
+                                      ),
+                                    ],
+                                  )
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             )
           : SizedBox(),
     );
+  }
+  void createGroup() async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+
+    setState(() {
+      isLoading = true;
+    });
+
+    String groupId = Uuid().v1();
+
+    await _firestore.collection('groups').doc(groupId).set({
+      "members": membersList,
+      "id": groupId,
+    });
+
+    for (int i = 0; i < membersList.length; i++) {
+      String uid = membersList[i]['uid'];
+
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('groups')
+          .doc(groupId)
+          .set({
+        "name": _groupName.text,
+        "id": groupId,
+      });
+    }
+
+    await _firestore.collection('groups').doc(groupId).collection('chats').add({
+      "message": "${ap.userModel.name} Created This Group.",
+      "type": "notify",
+    });
+
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => MyHomePage()), (route) => false);
   }
 }

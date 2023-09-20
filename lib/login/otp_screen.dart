@@ -14,7 +14,6 @@ import '../provider/auth_provider.dart';
 import '../utils/loading_widget.dart';
 import '../utils/utils.dart';
 import '../widgets/custom_button.dart';
-import '../screens/home_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   String phone;
