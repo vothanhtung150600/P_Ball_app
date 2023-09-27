@@ -97,9 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
+                            Map<String, dynamic> userMap = postDocs[index].data() as Map<String, dynamic>;
                             return Container(
                                 margin: EdgeInsets.only(left: 10,right: 10,top: 10),
-                                child: PostCard(postDocs[index]));
+                                child: PostCard(postDocs[index],userMap));
                           },
                           itemCount: postDocs.length,
                         );

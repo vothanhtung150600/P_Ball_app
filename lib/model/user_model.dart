@@ -9,8 +9,14 @@ class UserModel {
  late String phoneNumber;
  late String uid;
  late String status;
+ late String main_text;
+ late dynamic likeby;
+ late int comment_count;
+ late Timestamp updateAT;
 
-  UserModel({
+
+
+ UserModel({
     required this.name,
     required this.bio,
     required this.birthday,
@@ -18,11 +24,21 @@ class UserModel {
     required this.createdAt,
     required this.phoneNumber,
     required this.uid,
-    required this.status
+    required this.status,
   });
 
   UserModel.phone({required this.phoneNumber});
   UserModel.profile({required this.profilePic});
+  UserModel.chatmain({
+   required this.name,
+   required this.profilePic,
+   required this.updateAT,
+   required this.uid,
+   required this.main_text,
+   required this.likeby,
+   required this.comment_count,
+    required this.status,
+  });
 
 
  // from map
@@ -38,6 +54,20 @@ class UserModel {
       status: map['status'] ?? map['status'] as String ?? '',
     );
   }
+
+
+ factory UserModel.frommain(Map<String, dynamic> map) {
+   return UserModel.chatmain(
+     name: map['name'] ?? map['name'] as String ?? '',
+     uid: map['uid'] ?? map['uid'] as String ?? '',
+     profilePic: map['profilePic'] ?? map['profilePic'] as String ?? '',
+     updateAT: map['createdAt'] ?? map['createdAt'] as Timestamp ?? '',
+     main_text: map['main_text'] ?? map['main_text'] as String ?? '',
+     likeby: map['likeby'] ?? map['likeby'] as dynamic ?? '',
+     comment_count: map['comment_count'] ?? map['comment_count'] as int ?? '',
+     status: map['status'] ?? map['status'] as String ?? '',
+   );
+ }
 
   // to map
   Map<String, dynamic> toMap() {

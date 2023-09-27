@@ -94,14 +94,14 @@ class _CreatePostState extends State<CreatePost> {
                         await FirebaseFirestore.instance
                             .collection('posts')
                             .add({
+                          "name": user.userModel.name,
+                          "uid": user.userModel.uid,
+                          "profilePic": user.userModel.profilePic,
+                          "createdAt": Timestamp.now(),
                           'main_text': _body.text,
-                          'createdAt': Timestamp.now(),
-                          'userId': user.userModel.uid,
-                          'username': user.userModel.name,
-                          'photo': user.userModel.profilePic,
                           'likedBy': FieldValue.arrayUnion([]),
-                          'bookmarked': FieldValue.arrayUnion([]),
                           'comment_count': 0,
+                          'status': user.userModel.status
                         });
                         setState(() {
                           _isLoading = false;

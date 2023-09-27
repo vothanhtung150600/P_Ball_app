@@ -181,13 +181,6 @@ class _HomeScreenState extends State<HomeScreenss> with SingleTickerProviderStat
                                   ),
                                 );
                               },
-                              onLongPress: () {
-                                // delete chat room
-                                FirebaseFirestore.instance
-                                    .collection("chatRooms")
-                                    .doc(chatRoomModel.chatRoomId)
-                                    .delete();
-                              },
                               child: ListTile(
                                 leading: Stack(
                                   children: [

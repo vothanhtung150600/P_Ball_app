@@ -315,6 +315,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                               width: 2,
                             ),
                           ),
+                          suffixIcon: IconButton(
+                              icon: Icon(Icons.camera_alt_outlined), onPressed: () {},),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: const BorderSide(
